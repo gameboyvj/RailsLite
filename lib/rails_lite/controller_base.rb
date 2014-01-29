@@ -56,13 +56,6 @@ class ControllerBase
     render_content(template_erb.result(binding), "text/html")
     session.store_session(@res)
   end
-    #
-    # template_fname =
-    #   File.join("views", self.class.name.underscore, "#{template_name}.html.erb")
-    # render_content(
-    #   ERB.new(File.read(template_fname)).result(binding),
-    #   "text/html"
-
 
 
   # method exposing a `Session` object
@@ -73,6 +66,5 @@ class ControllerBase
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
     self.send(name)
-    render(name) unless already_built_response?
   end
 end

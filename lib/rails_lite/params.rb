@@ -6,12 +6,16 @@ class Params
   # 2. post body
   # 3. route params
   def initialize(req, route_params = {})
-    @req = req
-    @route_params = route_params
-    @params = {}
+    # @req = req
+ #    @route_params = route_params
+    # @params = {}
+#     @params.merge!(req.query_string)
+#     @params.merge!(req.body)
+#     @params.merge(route_params)
   end
 
   def [](key)
+    @params[key]
   end
 
   def to_s
@@ -26,7 +30,7 @@ class Params
   def parse_www_encoded_form(www_encoded_form)
     original = URI.decode_www_form(www_encoded_form)
 
-    original.keys do |key|
+    #original.keys do |key|
       #no idea what im doing
 
   end
@@ -34,6 +38,14 @@ class Params
   # this should return an array
   # user[address][street] should return ['user', 'address', 'street']
   def parse_key(key)
+    #/[(.*?)/].match(key)
+    match_data = /(?<head>.*)\[(?<rest>.*)\]/.match(key)
+    if match_data
+      parse_key(match_data["head"]).push(match_data["rest"])
+    else
+      [key]
+    end
+
   end
 end
 
@@ -49,22 +61,6 @@ end
 =begin
 
 
-class Params
-  def initialize(req, route_params)
-    @params = {}
-
-    @params.merge!(route_params)
-    if req.body
-      @params.merge!(parse_www_encoded_form(req.body))
-    end
-    if req.query_string
-      @params.merge!(parse_www_encoded_form(req.query_string))
-    end
-  end
-
-  def [](key)
-    @params[key]
-  end
 
   def to_s
     @params.to_json.to_s
